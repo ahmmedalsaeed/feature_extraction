@@ -3,6 +3,7 @@ from efficientnet_pytorch.utils import efficientnet
 import keras
 from tensorflow.keras.utils import img_to_array,load_img
 from tensorflow.keras.applications.vgg19 import VGG19
+from tensorflow.keras.applications.resnet50 import ResNet50
 from keras.applications.vgg16 import preprocess_input
 import matplotlib.pyplot as plt
 import cv2
@@ -24,7 +25,8 @@ class Feature_extraction:
             self.Base_model =VGG19(weights='imagenet')
         elif modelName == ("EfficientNet"):
             self.Base_model=EfficientNet.from_pretrained("efficientnet-b0")
-
+        elif modelName == ("ResNet50"):
+            self.Base_model =ResNet50(weights='imagenet')
      def get_name(self):
        return self.Base_model
      
@@ -33,7 +35,7 @@ class Feature_extraction:
        x = img_to_array(img)
        x = np.expand_dims(x, axis=0)
        x = preprocess_input(x)
-       if self.modelName == 'VGG19':
+       if self.modelName == 'VGG19' or self.modelName == 'ResNet50' :
             
             model = Model(inputs=self.Base_model.inputs, outputs=self.Base_model.layers[-2].output)
             print(model.summary())
