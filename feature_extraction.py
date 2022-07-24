@@ -1,3 +1,4 @@
+from pyexpat import model
 from efficientnet_pytorch import EfficientNet
 from efficientnet_pytorch.utils import efficientnet
 import keras
@@ -18,13 +19,14 @@ import argparse
 class Feature_extraction:
      
 
-     def __init__(self, modelName):
+     def __init__(self, modelName,ver):
         self.modelName = modelName
+        self.ver=ver
         if modelName == ("VGG19"):
             #self.Base_model =VGG19(weights='feature_extraction/vgg19_weights.h5')
             self.Base_model =VGG19(weights='imagenet')
         elif modelName == ("EfficientNet"):
-            self.Base_model=EfficientNet.from_pretrained("efficientnet-b0")
+            self.Base_model=EfficientNet.from_pretrained("efficientnet"+"-b"+ver)
         elif modelName == ("ResNet50"):
             self.Base_model =ResNet50(weights='imagenet')
      def get_name(self):
@@ -53,8 +55,8 @@ class Feature_extraction:
            tensor = tensor.unsqueeze(0)
            features = self.Base_model.extract_features(tensor)
            features = features.detach().numpy()
-           #df = pd.DataFrame(features)
-           #df.to_csv ('export_dataframe'+self.modelName+'.csv', index = None, header=True)
+           df = pd.DataFrame(features.tolist())
+           df.to_csv ('export_dataframe'+self.modelName+'.csv', index = None, header=True)
        return features
      def get_sammary(self):
 
@@ -62,10 +64,11 @@ class Feature_extraction:
 parser = argparse.ArgumentParser()
 parser.add_argument('--img_path', type=str, required=True)
 parser.add_argument('--model', type=str, required=True)
+parser.add_argument('--ver', type=str, required=False)
 
 args = parser.parse_args()
      
 img="feature_extraction\cat.jpg"
-VGG=Feature_extraction(args.model)
-features=VGG.extract(args.img_path)
+model=Feature_extraction(args.model,args.ver)
+features=model.extract(args.img_path)
 print(features)
