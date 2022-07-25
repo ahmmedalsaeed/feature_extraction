@@ -44,7 +44,6 @@ class Feature_extraction:
             features = model.predict(x)
             df = pd.DataFrame(features)
             df.to_csv ('export_dataframe'+self.modelName+'.csv', index = None, header=True) 
-
        if self.modelName == 'EfficientNet':
            img = Image.open(image).convert('RGB')
 
@@ -57,6 +56,7 @@ class Feature_extraction:
            features = features.detach().numpy()
            df = pd.DataFrame(features.tolist())
            df.to_csv ('export_dataframe'+self.modelName+'.csv', index = None, header=True)
+           
        return features
      def get_sammary(self):
 
@@ -72,3 +72,4 @@ img="feature_extraction\cat.jpg"
 model=Feature_extraction(args.model,args.ver)
 features=model.extract(args.img_path)
 print(features)
+print("features saved in csv file")
